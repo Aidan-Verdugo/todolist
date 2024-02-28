@@ -1,0 +1,25 @@
+version: '3'
+volumes:
+  data:
+services:
+  notedb:
+    restart: unless-stopped
+    image: mariadb
+    enviornment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: notedb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      -mariadb/db:/var/lib/mysql
+      -mariadb/init.sql:/data/application/init.sql
+    command: --init-file /data/application/init.sql
+    ports:
+      - "3306:3306"
+  webserver:
+    restart: unless-stopped
+    build:
+      context: ./webserver
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
